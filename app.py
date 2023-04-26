@@ -41,8 +41,20 @@ from settings import (
 )
 # isort: on
 
-DESCRIPTION = '# [DeepFloyd IF](https://github.com/deep-floyd/IF)'
-
+TITLE = '# [DeepFloyd IF](https://github.com/deep-floyd/IF)'
+DESCRIPTION = 'The DeepFloyd IF model has been initially released as a non-commercial research-only model. Please make sure you read and abide to the [LICENSE](https://huggingface.co/spaces/DeepFloyd/deepfloyd-if-license) before using it.'
+DISCLAIMER = 'In this demo, the DeepFloyd team may collect prompts, and user preferences (which of the images the user chose to upscale) for improving future models'
+FOOTER = """<div class="footer">
+                    <p>Model by <a href="https://huggingface.co/DeepFloyd" style="text-decoration: underline;" target="_blank">DeepFloyd</a> supported by <a href="https://huggingface.co/stabilityai" style="text-decoration: underline;" target="_blank">Stability AI</a>
+                    </p>
+            </div>
+            <div class="acknowledgments">
+                    <p><h4>LICENSE</h4>
+The model is licensed with a bespoke non-commercial research-only license <a href="https://huggingface.co/spaces/DeepFloyd/deepfloyd-if-license" style="text-decoration: underline;" target="_blank">DeepFloyd IF Research License Agreement</a> license. The license forbids you from sharing any content for commercial use, or that violates any laws, produce any harm to a person, disseminate any personal information that would be meant for harm, spread misinformation and target vulnerable groups. For the full list of restrictions please <a href="https://huggingface.co/spaces/DeepFloyd/deepfloyd-if-license" style="text-decoration: underline;" target="_blank">read the license</a></p>
+                    <p><h4>Biases and content acknowledgment</h4>
+Despite how impressive being able to turn text into image is, beware to the fact that this model may output content that reinforces or exacerbates societal biases, as well as realistic faces, explicit content and violence. The model was trained on a subset of the <a href="https://laion.ai/blog/laion-5b/" style="text-decoration: underline;" target="_blank">LAION-5B dataset</a> and is meant for research purposes. You can read more in the <a href="https://huggingface.co/DeepFloyd/IF-I-IF-v1.0" style="text-decoration: underline;" target="_blank">model card</a></p>
+            </div>
+        """
 if SHOW_DUPLICATE_BUTTON:
     SPACE_ID = os.getenv('SPACE_ID')
     DESCRIPTION += f'\n<p><a href="https://huggingface.co/spaces/{SPACE_ID}?duplicate=true"><img src="https://img.shields.io/badge/-Duplicate%20Space%20to%20skip%20the%20queue-blue?labelColor=white&style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAP5JREFUOE+lk7FqAkEURY+ltunEgFXS2sZGIbXfEPdLlnxJyDdYB62sbbUKpLbVNhyYFzbrrA74YJlh9r079973psed0cvUD4A+4HoCjsA85X0Dfn/RBLBgBDxnQPfAEJgBY+A9gALA4tcbamSzS4xq4FOQAJgCDwV2CPKV8tZAJcAjMMkUe1vX+U+SMhfAJEHasQIWmXNN3abzDwHUrgcRGmYcgKe0bxrblHEB4E/pndMazNpSZGcsZdBlYJcEL9Afo75molJyM2FxmPgmgPqlWNLGfwZGG6UiyEvLzHYDmoPkDDiNm9JR9uboiONcBXrpY1qmgs21x1QwyZcpvxt9NS09PlsPAAAAAElFTkSuQmCC&logoWidth=14" alt="Duplicate Space"></a></p>'
@@ -210,7 +222,7 @@ examples = [
     'high quality dslr photo, a photo product of a lemon inspired by natural and organic materials, wooden accents, intricately decorated with glowing vines of led lights, inspired by baroque luxury',
     'Aerial photo of a beach, the words "what if?" written in the sand.',
     'A photo of a red cube on top of a blue cube. a photo of a red cube with text "blue" on it is sitting on top of a blue cube with text "red" on it. photo realism',
-    'a photo of a violet baseball cap with yellow text: "deep floyd". 50mm lens, photo realism, cine lens. violet baseball cap says "deep floyd". reflections, render. yellow stitch text "deep floyd"',
+    'a photo of a violet baseball cap with yellow text: "DISdeep floyd". 50mm lens, photo realism, cine lens. violet baseball cap says "deep floyd". reflections, render. yellow stitch text "deep floyd"',
     'ultra close-up color photo portrait of rainbow owl with deer horns in the woods',
     'product image of a crochet Cthulhu the great old one emerging from a spacetime wormhole made of wool.',
     'a little green budgie parrot driving small red toy car in new york street, photo',
@@ -221,6 +233,7 @@ examples = [
 ]
 
 with gr.Blocks(css='style.css') as demo:
+    gr.Markdown(TITLE)
     gr.Markdown(DESCRIPTION)
     with gr.Box():
         with gr.Row(elem_id='prompt-container').style(equal_height=True):
@@ -371,7 +384,8 @@ with gr.Blocks(css='style.css') as demo:
                     label='Stage 1 param file hash name')
                 selected_index_for_stage2 = gr.Number(
                     label='Selected index for Stage 2', value=-1, precision=0)
-
+    gr.Markdown(DISCLAIMER)
+    gr.HTML(FOOTER)
     stage1_inputs = [
         prompt,
         negative_prompt,
