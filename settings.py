@@ -52,5 +52,5 @@ if os.getenv('IS_PUBLIC_DEMO') == '1':
     # parameters
     DEFAULT_CUSTOM_TIMESTEPS_1 = 'smart50'
     # model
-    DISABLE_AUTOMATIC_CPU_OFFLOAD = False
-    RUN_GARBAGE_COLLECTION = True
+    DISABLE_AUTOMATIC_CPU_OFFLOAD = True
+    RUN_GARBAGE_COLLECTION = False
