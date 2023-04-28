@@ -220,16 +220,18 @@ def show_upscaled_view() -> tuple[dict, dict]:
 
 examples = [
     'high quality dslr photo, a photo product of a lemon inspired by natural and organic materials, wooden accents, intricately decorated with glowing vines of led lights, inspired by baroque luxury',
-    'Aerial photo of a beach, the words "what if?" written in the sand.',
-    'A photo of a red cube on top of a blue cube. a photo of a red cube with text "blue" on it is sitting on top of a blue cube with text "red" on it. photo realism',
-    'a photo of a violet baseball cap with yellow text: "DISdeep floyd". 50mm lens, photo realism, cine lens. violet baseball cap says "deep floyd". reflections, render. yellow stitch text "deep floyd"',
+    'paper quilling, extremely detailed, paper quilling of a nordic mountain landscape, 8k rendering',
+    'letters made of candy on a plate that says "diet"',
+    'a photo of a violet baseball cap with yellow text: "deep floyd". 50mm lens, photo realism, cine lens. violet baseball cap says "deep floyd". reflections, render. yellow stitch text "deep floyd"',
     'ultra close-up color photo portrait of rainbow owl with deer horns in the woods',
-    'product image of a crochet Cthulhu the great old one emerging from a spacetime wormhole made of wool.',
+    'a cloth embroidered with the text "laion" and an embroidered cute baby lion face',
+    'product image of a crochet Cthulhu the great old one emerging from a spacetime wormhole made of wool',
     'a little green budgie parrot driving small red toy car in new york street, photo',
     'origami dancer in white paper, 3d render, ultra-detailed, on white background, studio shot.',
     'glowing mushrooms in a natural environment with smoke in the frame',
+    'a subway train\'s digital sign saying "open source", vsco preset, 35mm photo, film grain, in a dim subway station',
     'a bowl full of few adorable golden doodle puppies, the doodles dusted in powdered sugar and look delicious, bokeh, cannon. professional macro photo, super detailed. cute sweet golden doodle confectionery, baking puppies in powdered sugar in the bowl',
-    'a yellow ipe tree in the cerrado, the hills are dry and the weather is hot. the ipe tree shows all its beauty among the dry trees. cinematic film still of a movie, realism, 4k, 8mm, grainy, panavision',
+    'a face of a woman made completely out of foliage, twigs, leaves and flowers, side view'
 ]
 
 with gr.Blocks(css='style.css') as demo:
