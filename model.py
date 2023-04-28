@@ -184,8 +184,7 @@ class Model:
                            generator=generator,
                            output_type='pt').images
         pil_images = self.to_pil_images(images)
-        self.pipe.watermarker.apply_watermark(
-            pil_images, self.pipe.unet.config.sample_size)
+        # self.pipe.watermarker.apply_watermark(pil_images, self.pipe.unet.config.sample_size)
 
         stage1_params = {
             'prompt': prompt,
@@ -216,7 +215,7 @@ class Model:
         guidance_scale_2: float = 4.0,
         custom_timesteps_2: str = 'smart50',
         num_inference_steps_2: int = 50,
-        disable_watermark: bool = False,
+        disable_watermark: bool = True,
     ) -> PIL.Image.Image:
         self.check_seed(seed_2)
         self.check_num_inference_steps(num_inference_steps_2)
@@ -249,8 +248,7 @@ class Model:
         if disable_watermark:
             return pil_images[0]
 
-        self.super_res_1_pipe.watermarker.apply_watermark(
-            pil_images, self.super_res_1_pipe.unet.config.sample_size)
+        # self.super_res_1_pipe.watermarker.apply_watermark(pil_images, self.super_res_1_pipe.unet.config.sample_size)
         return pil_images[0]
 
     def run_stage3(
@@ -306,8 +304,7 @@ class Model:
             num_inference_steps_2=num_inference_steps_2,
             disable_watermark=True)
         temp_image = out_image.copy()
-        self.super_res_1_pipe.watermarker.apply_watermark(
-            [temp_image], self.super_res_1_pipe.unet.config.sample_size)
+        # self.super_res_1_pipe.watermarker.apply_watermark([temp_image], self.super_res_1_pipe.unet.config.sample_size)
         yield temp_image
         yield self.run_stage3(image=out_image,
                               prompt=prompt,
