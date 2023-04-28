@@ -27,14 +27,9 @@ class Model:
         self.pipe = None
         self.super_res_1_pipe = None
         self.super_res_2_pipe = None
-        self.watermark_image = None
 
         if torch.cuda.is_available():
             self.load_weights()
-            self.watermark_image = PIL.Image.fromarray(
-                self.pipe.watermarker.watermark_image.to(
-                    torch.uint8).cpu().numpy(),
-                mode='RGBA')
 
     def load_weights(self) -> None:
         self.pipe = DiffusionPipeline.from_pretrained(
@@ -42,14 +37,14 @@ class Model:
             torch_dtype=torch.float16,
             variant='fp16',
             use_safetensors=True,
-            use_auth_token=HF_TOKEN)
+            safety_checker=None)
         self.super_res_1_pipe = DiffusionPipeline.from_pretrained(
             'DeepFloyd/IF-II-L-v1.0',
             text_encoder=None,
             torch_dtype=torch.float16,
             variant='fp16',
             use_safetensors=True,
-            use_auth_token=HF_TOKEN)
+            safety_checker=None)
 
         if not DISABLE_SD_X4_UPSCALER:
             self.super_res_2_pipe = StableDiffusionUpscalePipeline.from_pretrained(
@@ -66,37 +61,6 @@ class Model:
             self.super_res_1_pipe.enable_model_cpu_offload()
             if not DISABLE_SD_X4_UPSCALER:
                 self.super_res_2_pipe.enable_model_cpu_offload()
-
-    def apply_watermark_to_sd_x4_upscaler_results(
-            self, images: list[PIL.Image.Image]) -> None:
-        w, h = images[0].size
-
-        stability_x4_upscaler_sample_size = 128
-
-        coef = min(h / stability_x4_upscaler_sample_size,
-                   w / stability_x4_upscaler_sample_size)
-        img_h, img_w = (int(h / coef), int(w / coef)) if coef < 1 else (h, w)
-
-        S1, S2 = 1024**2, img_w * img_h
-        K = (S2 / S1)**0.5
-        watermark_size = int(K * 62)
-        watermark_x = img_w - int(14 * K)
-        watermark_y = img_h - int(14 * K)
-
-        watermark_image = self.watermark_image.copy().resize(
-            (watermark_size, watermark_size),
-            PIL.Image.Resampling.BICUBIC,
-            reducing_gap=None)
-
-        for image in images:
-            image.paste(watermark_image,
-                        box=(
-                            watermark_x - watermark_size,
-                            watermark_y - watermark_size,
-                            watermark_x,
-                            watermark_y,
-                        ),
-                        mask=watermark_image.split()[-1])
 
     @staticmethod
     def to_pil_images(images: torch.Tensor) -> list[PIL.Image.Image]:
@@ -176,8 +140,6 @@ class Model:
                            generator=generator,
                            output_type='pt').images
         pil_images = self.to_pil_images(images)
-        self.pipe.watermarker.apply_watermark(
-            pil_images, self.pipe.unet.config.sample_size)
 
         stage1_params = {
             'prompt': prompt,
@@ -208,7 +170,6 @@ class Model:
         guidance_scale_2: float = 4.0,
         custom_timesteps_2: str = 'smart50',
         num_inference_steps_2: int = 50,
-        disable_watermark: bool = False,
     ) -> PIL.Image.Image:
         self.check_seed(seed_2)
         self.check_num_inference_steps(num_inference_steps_2)
@@ -238,11 +199,6 @@ class Model:
                                     noise_level=250).images
         pil_images = self.to_pil_images(out)
 
-        if disable_watermark:
-            return pil_images[0]
-
-        self.super_res_1_pipe.watermarker.apply_watermark(
-            pil_images, self.super_res_1_pipe.unet.config.sample_size)
         return pil_images[0]
 
     def run_stage3(
@@ -269,7 +225,6 @@ class Model:
                                     num_inference_steps=num_inference_steps_3,
                                     generator=generator,
                                     noise_level=100).images
-        self.apply_watermark_to_sd_x4_upscaler_results(out)
         return out[0]
 
     def run_stage2_3(
@@ -295,11 +250,8 @@ class Model:
             seed_2=seed_2,
             guidance_scale_2=guidance_scale_2,
             custom_timesteps_2=custom_timesteps_2,
-            num_inference_steps_2=num_inference_steps_2,
-            disable_watermark=True)
+            num_inference_steps_2=num_inference_steps_2)
         temp_image = out_image.copy()
-        self.super_res_1_pipe.watermarker.apply_watermark(
-            [temp_image], self.super_res_1_pipe.unet.config.sample_size)
         yield temp_image
         yield self.run_stage3(image=out_image,
                               prompt=prompt,
