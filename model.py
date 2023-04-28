@@ -8,6 +8,7 @@ from typing import Generator
 import numpy as np
 import PIL.Image
 import torch
+from transformers import T5EncoderModel
 from diffusers import DiffusionPipeline, StableDiffusionUpscalePipeline
 from diffusers.pipelines.deepfloyd_if import (fast27_timesteps,
                                               smart27_timesteps,
@@ -31,20 +32,27 @@ class Model:
 
         if torch.cuda.is_available():
             self.load_weights()
-            self.watermark_image = PIL.Image.fromarray(
-                self.pipe.watermarker.watermark_image.to(
-                    torch.uint8).cpu().numpy(),
-                mode='RGBA')
+            self.watermark_image = None
 
     def load_weights(self) -> None:
+        text_encoder = T5EncoderModel.from_pretrained(
+            "DeepFloyd/IF-I-XL-v1.0",
+            subfolder="text_encoder", 
+            device_map="auto", 
+            load_in_8bit=True, 
+            variant="8bit"
+        )
         self.pipe = DiffusionPipeline.from_pretrained(
             'DeepFloyd/IF-I-XL-v1.0',
+            text_encoder=text_encoder,
+            safety_checker=None,
             torch_dtype=torch.float16,
             variant='fp16',
             use_safetensors=True,
             use_auth_token=HF_TOKEN)
         self.super_res_1_pipe = DiffusionPipeline.from_pretrained(
             'DeepFloyd/IF-II-L-v1.0',
+            safety_checker=None,
             text_encoder=None,
             torch_dtype=torch.float16,
             variant='fp16',
@@ -269,7 +277,7 @@ class Model:
                                     num_inference_steps=num_inference_steps_3,
                                     generator=generator,
                                     noise_level=100).images
-        self.apply_watermark_to_sd_x4_upscaler_results(out)
+        # self.apply_watermark_to_sd_x4_upscaler_results(out)
         return out[0]
 
     def run_stage2_3(
