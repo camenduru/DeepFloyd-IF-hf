@@ -38,7 +38,7 @@ class Model:
 
     def load_weights(self) -> None:
         self.pipe = DiffusionPipeline.from_pretrained(
-            'DeepFloyd/IF-I-IF-v1.0',
+            'DeepFloyd/IF-I-XL-v1.0',
             torch_dtype=torch.float16,
             variant='fp16',
             use_safetensors=True,
