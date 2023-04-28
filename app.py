@@ -661,4 +661,4 @@ with gr.Blocks(css='style.css') as demo:
         queue=False,
     )
 
-demo.queue(api_open=False, max_size=MAX_QUEUE_SIZE).launch(debug=DEBUG)
+demo.queue(share=True, api_open=False, max_size=MAX_QUEUE_SIZE).launch(debug=DEBUG)
