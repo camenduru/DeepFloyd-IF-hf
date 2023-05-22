@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-HF_TOKEN = os.getenv('HF_TOKEN')
+HF_TOKEN = "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"
 UPLOAD_REPO_ID = os.getenv('UPLOAD_REPO_ID')
 UPLOAD_RESULT_IMAGE = os.getenv('UPLOAD_RESULT_IMAGE') == '1'
 
