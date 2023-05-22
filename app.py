@@ -10,6 +10,7 @@ import tempfile
 import gradio as gr
 import torch
 from huggingface_hub import HfApi
+from typing import Dict, Tuple
 
 # isort: off
 from model import Model
@@ -199,22 +200,22 @@ def upload_stage2_3_info(stage1_param_file_hash_name: str,
         print(e)
 
 
-def update_upscale_button(selected_index: int) -> tuple[dict, dict]:
+def update_upscale_button(selected_index: int) -> Tuple[Dict, Dict]:
     if selected_index == -1:
         return gr.update(interactive=False), gr.update(interactive=False)
     else:
         return gr.update(interactive=True), gr.update(interactive=True)
 
 
-def _update_result_view(show_gallery: bool) -> tuple[dict, dict]:
+def _update_result_view(show_gallery: bool) -> Tuple[Dict, Dict]:
     return gr.update(visible=show_gallery), gr.update(visible=not show_gallery)
 
 
-def show_gallery_view() -> tuple[dict, dict]:
+def show_gallery_view() -> Tuple[Dict, Dict]:
     return _update_result_view(True)
 
 
-def show_upscaled_view() -> tuple[dict, dict]:
+def show_upscaled_view() -> Tuple[Dict, Dict]:
     return _update_result_view(False)
 
 
