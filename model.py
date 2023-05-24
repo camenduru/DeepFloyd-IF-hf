@@ -31,10 +31,10 @@ class Model:
 
         if torch.cuda.is_available():
             self.load_weights()
-            self.watermark_image = PIL.Image.fromarray(
-                self.pipe.watermarker.watermark_image.to(
-                    torch.uint8).cpu().numpy(),
-                mode='RGBA')
+            # self.watermark_image = PIL.Image.fromarray(
+            #     self.pipe.watermarker.watermark_image.to(
+            #         torch.uint8).cpu().numpy(),
+            #     mode='RGBA')
 
     def load_weights(self) -> None:
         self.pipe = DiffusionPipeline.from_pretrained(
