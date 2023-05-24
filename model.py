@@ -42,7 +42,6 @@ class Model:
             torch_dtype=torch.float16,
             variant='fp16',
             use_safetensors=True,
-            safety_checker=None,
             use_auth_token=HF_TOKEN)
         self.super_res_1_pipe = DiffusionPipeline.from_pretrained(
             'DeepFloyd/IF-II-L-v1.0',
@@ -50,7 +49,6 @@ class Model:
             torch_dtype=torch.float16,
             variant='fp16',
             use_safetensors=True,
-            safety_checker=None,
             use_auth_token=HF_TOKEN)
 
         if not DISABLE_SD_X4_UPSCALER:
@@ -271,7 +269,7 @@ class Model:
                                     num_inference_steps=num_inference_steps_3,
                                     generator=generator,
                                     noise_level=100).images
-        self.apply_watermark_to_sd_x4_upscaler_results(out)
+        # self.apply_watermark_to_sd_x4_upscaler_results(out)
         return out[0]
 
     def run_stage2_3(
